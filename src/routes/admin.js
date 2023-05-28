@@ -14,23 +14,44 @@ router.get('/posts', (req, res) => {
 });
 
 router.get('/categories', (req, res) => {
-  res.render('admin/categories');
+  Category.find().lean().then((categories) => {
+    res.render('admin/categories', { categories });
+  }).catch(() => {
+    req.flash('error_message', 'Não foi possível listar as categorias');
+    res.redirect('/v1/admin');
+  });
 });
 
 router.get('/categories/add', (req, res) => {
   res.render('admin/add-categories');
 });
 
-router.post('/categories/add', (req, res) => {
-  const category = { ...req.body };
-  new Category(category)
-    .save()
-    .then(() => {
-      console.log('Category saved successfully');
-    })
-    .catch((error) => {
-      console.log('Error saving category');
-    });
+router.post('/categories/add', async (req, res) => {
+
+  const errors = [];
+
+  if (!req.body.name) {
+    errors.push({ text: 'Please enter a name' });
+  }
+
+  if (!req.body.slug) {
+    errors.push({ text: 'Please enter a slug' });
+  }
+
+  if (errors.length) {
+    res.render('admin/add-categories', { errors });
+  } else {
+    const category = { ...req.body };
+    await new Category(category)
+      .save()
+      .then(() => {
+        req.flash('success_message', 'Categoria criada com sucesso');
+      })
+      .catch(() => {
+        req.flash('error_message', 'Não foi possível criar a categoria');
+      });
+    res.redirect('/v1/admin/categories');
+  }
 });
 
 module.exports = router;
