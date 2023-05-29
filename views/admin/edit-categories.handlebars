@@ -1,0 +1,36 @@
+{{#each errors}}
+<div class="alert alert-danger">
+  {{ text }}
+</div>
+{{else}}
+{{/each}}
+
+<h3>Editar Categoria:</h3>
+<div class="card">
+  <div class="card-body">
+    <form action="/v1/admin/categories/edit" method="POST">
+    <input type="hidden" name="id" value="{{ _id }}" />
+      <labe for="name">Nome: </labe>
+      <input 
+        class="form-control" 
+        type="text" id="name" 
+        name="name" 
+        placeholder="Nome da categoria"
+        value="{{name}}"
+      />
+      <br />
+      <labe for="slug">Slug:</labe>
+      <input 
+        class="form-control" 
+        type="text" id="slug" 
+        name="slug" 
+        placeholder="Slug da categoria" 
+        value="{{slug}}"
+      />
+      <br />
+      <button type="submit" class="btn btn-success">
+        Editar categoria
+      </button>
+    </form>
+  </div>
+</div>

@@ -11,6 +11,10 @@
   <div class="card-body">
     <h4>{{ name }}</h4>
     <small>{{ slug }}</small>
+    <br />
+    <a href="/v1/admin/categories/edit/{{_id}}">
+      <button class="btn btn-success mt-4">Editar</button>
+    </a>
   </div>
 </div>
 {{else}}

@@ -54,4 +54,41 @@ router.post('/categories/add', async (req, res) => {
   }
 });
 
+router.get('/categories/edit/:id', (req, res) => {
+  const id = new mongoose.Types.ObjectId(req.params.id);
+  Category.findOne({ _id: id })
+    .then((category) => {
+      res.render('admin/edit-categories', {
+        _id: req.params.id,
+        name: category.name,
+        slug: category.slug,
+      });
+    })
+    .catch(() => {
+      req.flash('error_message', 'Não foi possível encontrar a categoria');
+    });
+});
+
+router.post('/categories/edit', (req, res) => {
+  const id = new mongoose.Types.ObjectId(req.body.id);
+  Category.findOne({ _id: id })
+    .then((category) => {
+      category.name = req.body.name;
+      category.slug = req.body.slug;
+
+      category.save()
+        .then(() => {
+          req.flash('success_message', 'Categoría editda com sucesso');
+          res.redirect('/v1/admin/categories');
+        })
+        .catch(() => {
+          req.flash('error_message', 'Ocorreu um erro ao atualizar a categoria');
+          res.redirect('/v1/admin/categories');
+        });
+    })
+    .catch(() => {
+      req.flash('error_message', 'Não foi possível editar a categoria');
+    });
+});
+
 module.exports = router;
